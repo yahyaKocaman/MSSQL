@@ -1,98 +1,117 @@
-	create table instructor(
-	ins_ID nvarchar(5) not null,
-	name   nvarchar(20) not null ,
-	surname nvarchar(20) not null,
-	dept_ID nvarchar(5) not null,    
-	primary key(ins_ID),
-	foreign key(dept_ID) references department);
+create table department (
+    dept_ID nvarchar(5) not null,
+    dept_Name nvarchar(40) not null,
+    primary key(dept_ID)
+);
 
-	create table department(
-	dept_ID nvarchar(5) not null,
-	dept_Name nvarchar(40) not null,
-	primary key(dept_ID));
+create table instructor (
+    ins_ID nvarchar(5) not null,
+    name   nvarchar(20) not null,
+    surname nvarchar(20) not null,
+    dept_ID nvarchar(5) not null,    
+    primary key(ins_ID),
+    foreign key(dept_ID) references department(dept_ID)
+);
 
+create table student (
+    stu_ID nvarchar(5) not null,
+    name   nvarchar(20) not null,
+    surname nvarchar(20) not null,
+    dept_ID nvarchar(5) not null,
+    primary key(stu_ID),
+    foreign key(dept_ID) references department(dept_ID)
+);
 
-	create table student(
-	stu_ID nvarchar(5) not null,
-	name   nvarchar(20) not null ,
-	surname nvarchar(20) not null,
-	dept_ID nvarchar(5) not null,
-	primary key(stu_ID),
-	foreign key(dept_ID) references department);
+create table courses (
+    course_ID nvarchar(5) not null,
+    course_Name nvarchar(20) not null, 
+    primary key(course_ID)
+);
 
-	create table stu_Courses(
-	stu_ID nvarchar(5) not null,
-	course_ID nvarchar(5) not null,
-	semester nvarchar(10) not null,
-	primary key(stu_ID),
-	foreign key(course_ID) references courses);
-
-
-	create table courses(
-	course_ID nvarchar(5) not null,
-	course_Name nvarchar(20) not null, 
-	primary key (course_ID)
-	);
-
-	Alter table student(primary key(stu_ID));
-
-	insert into department values (45098,'software development')
-	insert into department (dept_Name,dept_ID) values ('managment',85697)
-	insert into department values (98562,'Physics')
-
-	insert into courses values(854,'DB15')
-	insert into courses values(61,'OOP')
-	insert into courses values(98,'Cyber Security')
-
-	insert into student values(423,'John','Malone',45098)
-	insert into student values(211,'Maur','Icardi',85697)
-
-	insert into stu_Courses values(97416,854,'Spring_24')
-	insert into stu_Courses values(71253,61,'Fall_23')
-	insert into stu_Courses values(54238,98,'Fall_23')
-
-	select * from student
-
-	select * from stu_Courses
-
-	select * from department
-
-	select * from stu_Courses
-
-	insert into instructor values (98561,'Kağan','Okatan',45098)
-	insert into instructor values (9842,'Thomas','Edison',85697)
-	insert into instructor values (9691,'Graham','Derst',98562)
+create table stu_Courses (
+    stu_ID nvarchar(5) not null,
+    course_ID nvarchar(5) not null,
+    semester nvarchar(10) not null,
+    primary key(stu_ID, course_ID),  
+    foreign key(stu_ID) references student(stu_ID),
+    foreign key(course_ID) references courses(course_ID)
+);
 
 
-	-- get the names of the instrucators who work in software development department
-	-- get the names of the students who study in managment department
-	-- get the course names of the students who study in software development department
+
+-- Department verileri
+insert into department values ('45098', 'software development');
+insert into department values ('85697', 'management');  
+insert into department values ('98562', 'Physics');
+
+-- Courses verileri
+insert into courses values ('854', 'DB15');
+insert into courses values ('61', 'OOP');
+insert into courses values ('98', 'Cyber Security');
+
+-- Student verileri
+insert into student values ('423', 'John', 'Malone', '45098');
+insert into student values ('211', 'Maur', 'Icardi', '85697');
+
+-- Instructor verileri
+insert into instructor values ('98561', 'Kağan', 'Okatan', '45098');
+insert into instructor values ('9842', 'Thomas', 'Edison', '85697');
+insert into instructor values ('9691', 'Graham', 'Derst', '98562');
 
 
-	select instructor.name,instructor.surname,department.dept_Name 
-	from instructor,department
-	where instructor.dept_ID = department.dept_ID
+insert into stu_Courses values ('423', '854', 'Spring_24');  
+insert into stu_Courses values ('423', '61', 'Fall_23');     
+insert into stu_Courses values ('211', '98', 'Fall_23');     
 
 
-	select student.name,student.surname,department.dept_Name
-	from student,department
-	where student.dept_ID = department.dept_ID
-	and department.dept_Name like '%managment%'
+select instructor.name, instructor.surname, department.dept_Name 
+from instructor
+join department on instructor.dept_ID = department.dept_ID
+where department.dept_Name = 'software development';
 
-	select student.name,student.surname,department.dept_Name,courses.course_Name
-	from student,department,stu_Courses,courses
-	where student.dept_ID = department.dept_ID
-	and student.stu_ID = stu_Courses.stu_ID
-	and stu_Courses.course_ID = courses.course_ID
-	and department.dept_Name ='software development'
 
-	select student.name,student.surname,courses.course_Name
-	from student,stu_Courses,courses
-	where student.stu_ID in (select student.stu_ID
-							from student,department,stu_Courses,courses
-							where student.dept_ID = department.dept_ID
-							and student.stu_ID = stu_Courses.stu_ID
-							and stu_Courses.course_ID = courses.course_ID
-							and department.dept_Name ='software development')
-	and student.stu_ID = stu_Courses.stu_ID
-	and stu_Courses.course_ID = courses.course_ID
+select student.name, student.surname, department.dept_Name
+from student
+join department on student.dept_ID = department.dept_ID
+where department.dept_Name = 'management';
+
+
+
+select student.name, student.surname, courses.course_Name
+from student
+join department on student.dept_ID = department.dept_ID
+join stu_Courses on student.stu_ID = stu_Courses.stu_ID
+join courses on stu_Courses.course_ID = courses.course_ID
+where department.dept_Name = 'software development';
+
+
+
+select instructor.name, instructor.surname, department.dept_Name
+from instructor
+join department on instructor.dept_ID = department.dept_ID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
