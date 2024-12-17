@@ -153,4 +153,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 3rd-year Software Development Student at Istanbul Aydın University  
 Passionate about AI, Machine Learning, and Software Development.  
-LinkedIn: [Yahya Kocaman](https://www.linkedin.com/in/yahyakocaman/)
+LinkedIn: [Yahya Kocaman](https://www.linkedin.com/in/yahya-kocaman-70b8b3246?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)
+
+
+
